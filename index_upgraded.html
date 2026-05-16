@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>宿舍悬案：是谁动了我的外卖？- DeepSeek AI 硬核版</title>
+<style>
+:root{--bg:#08152d;--panel:rgba(10,22,45,.82);--panel2:rgba(18,32,58,.92);--line:rgba(255,255,255,.12);--text:#eef3ff;--muted:#b7c3df;--gold:#f7d788;--accent:#7db9ff;--danger:#ff7b7b;--ok:#9fe29d;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#06111f;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;min-height:100%;}
+body{overflow-x:hidden}
+button{border:none;border-radius:16px;padding:12px 16px;background:linear-gradient(180deg,#274a82,#112a52);color:var(--text);font-weight:800;font-size:15px;box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.24);position:relative;overflow:hidden;cursor:pointer;transition:.15s ease}
+button::after{content:'';position:absolute;left:12%;right:12%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);opacity:.75}
+button:active{transform:scale(.97);filter:brightness(1.12)}
+button.secondary{background:rgba(255,255,255,.075);box-shadow:none;border:1px solid rgba(255,255,255,.16);color:#dce8ff}
+button.warn{background:linear-gradient(180deg,#9a4d3c,#5c211c);border:1px solid rgba(255,190,120,.42);box-shadow:0 12px 28px rgba(120,40,22,.28), inset 0 1px 0 rgba(255,255,255,.14)}
+button.danger{background:linear-gradient(180deg,#b8493f,#611b1b);border:1px solid rgba(255,213,128,.55);box-shadow:0 0 0 1px rgba(255,213,128,.12),0 14px 30px rgba(150,35,25,.34), inset 0 1px 0 rgba(255,255,255,.18)}
+button.utility{background:linear-gradient(180deg,#263955,#111f37);border:1px solid rgba(165,190,235,.22);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+button:disabled{opacity:.45}
+img{max-width:100%;display:block}
+.hidden{display:none !important}
+.app{max-width:560px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg,#08152d,#040c17);position:relative}
+.hero{position:relative;min-height:100vh;overflow:hidden}
+.hero .cover{position:absolute;inset:0;background:url('data:image/webp;base64,UklGRkxdAABXRUJQVlA4IEBdAABw6gGdASoIAggCPp1GnUulo6YvJVKbqeATiWNtlmhVzVFrrLYnjFUjfAvt5VDa8IBjK+xBjn6X/c7rPiL8j0tcl3rLNn1bWbklCvDC/svYrLkMvqQhSX0u/U76l_kX-R_wH_lX-R_wVONhcF6sRErXSVRanPQ4T7n60KPPVrz6Yg_XKJZ2VrHo_oTQj9jDZ8z5JUGz59Ufycv6-fY-5jZh0o-ZOhYgGhYhCIBEH_IgHqEIzfhYg2dBKwGmFTgvfPqtWdlax6P6BQD_-Ry_r5_wD_lX-R-Q');background-size:cover;background-position:center}
+.hero .mask{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,16,.25),rgba(5,8,16,.7) 45%,rgba(5,8,16,.92))}
+.hero-inner{position:relative;z-index:1;padding:42px 24px 28px;display:flex;min-height:100vh;flex-direction:column;justify-content:flex-end;gap:14px}
+.tag{display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:13px;color:#dce8ff}
+.title{font-size:34px;line-height:1.15;font-weight:900;letter-spacing:1px;text-shadow:0 6px 20px rgba(0,0,0,.4)}
+.subtitle{color:#d4def5;line-height:1.7}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.topbar{position:sticky;top:0;z-index:5;background:rgba(6,16,32,.85);backdrop-filter:blur(10px);padding:10px 14px;border-bottom:1px solid var(--line);display:flex;gap:8px;justify-content:space-between;align-items:center}
+.topstat{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.08);padding:8px 10px;border-radius:999px;font-size:13px;border:1px solid var(--line)}
+.screen{padding:14px 14px 110px;min-height:100vh;background-size:cover;background-position:center}
+.case-card{background:rgba(7,20,43,.78);border:1px solid rgba(255,255,255,.11);border-radius:26px;padding:18px}
+.case-banner{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.notice{background:rgba(247,215,136,.14);border:1px solid rgba(247,215,136,.42);padding:14px;border-radius:18px;color:#ffe5a8;font-weight:700}
+.fixed-actions{position:fixed;left:50%;transform:translateX(-50%);bottom:10px;width:min(560px,100%);padding:8px 14px 18px;z-index:8;background:linear-gradient(180deg,rgba(6,16,32,0),rgba(6,16,32,.95))}
+.fixed-actions .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card-btn{position:relative;overflow:hidden;min-height:174px;padding:0;background:linear-gradient(180deg,rgba(18,38,72,.84),rgba(7,17,34,.92));border:1px solid rgba(247,215,136,.24);border-radius:20px;cursor:pointer;transition:.2s ease}
+.card-btn::before{content:'CASE FILE';position:absolute;top:10px;left:12px;z-index:2;font-size:10px;letter-spacing:1.4px;color:#ffe2a2;background:rgba(247,215,136,.13);border:1px solid rgba(247,215,136,.28);padding:5px 9px;border-radius:8px;font-weight:800}
+.card-btn::after{content:'';position:absolute;right:-24px;top:-34px;width:88px;height:88px;border-radius:50%;border:1px solid rgba(247,215,136,.18);box-shadow:0 0 35px rgba(247,215,136,.12)}
+.card-btn .bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.50) saturate(.9);transform:scale(1.02);transition:transform .16s ease, filter .16s ease}
+.card-btn .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,8,18,.12),rgba(4,10,20,.62) 48%,rgba(3,8,18,.9)),radial-gradient(circle at 18% 12%,rgba(125,185,255,.20),transparent 42%)}
+.card-btn .txt{position:relative;z-index:1;padding:42px 14px 14px;display:flex;flex-direction:column;justify-content:flex-end;min-height:174px}
+.card-btn .txt .icon{font-size:25px;margin-bottom:8px;filter:drop-shadow(0 5px 10px rgba(0,0,0,.35))}
+.card-btn .title-main{font-size:23px;font-weight:950;letter-spacing:.4px}
+.card-btn .small{font-size:12px;color:#d7e3ff;opacity:.92;margin-top:6px;font-weight:500;line-height:1.5}
+.ap-cost{align-self:flex-start;margin-top:10px;padding:5px 9px;border-radius:999px;background:rgba(247,215,136,.14);border:1px solid rgba(247,215,136,.34);font-size:12px;color:#ffe2a2;font-weight:700}
+.card-btn:active .bg{transform:scale(1.07);filter:brightness(.65) saturate(1.05)}
+.section-title{font-size:26px;font-weight:900;margin:0 0 10px}
+.muted{color:var(--muted)}
+.line{height:1px;background:var(--line);margin:14px 0}
+.suspect-card{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:12px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);margin-bottom:10px}
+.suspect-card img{width:96px;height:124px;object-fit:cover;border-radius:14px}
+.suspect-card h4{margin:0 0 6px;font-size:20px}
+.evidence-chip{display:inline-block;border:1px solid rgba(247,215,136,.35);background:rgba(247,215,136,.12);padding:7px 10px;border-radius:999px;margin:4px 6px 0 0;color:#ffe6a6;font-size:13px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:30;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.sheet{width:min(560px,100%);max-height:92vh;overflow:auto;background:linear-gradient(180deg,#12284a,#08182f);border-radius:26px 26px 0 0;padding:18px 16px 26px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.close{align-self:flex-end;background:rgba(255,255,255,.08);padding:9px 12px;border-radius:999px;font-size:12px;margin:2px 64px 10px 0;position:sticky;top:8px;z-index:3;border:1px solid var(--line)}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.option{padding:12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);cursor:pointer}
+.option.sel{border-color:var(--gold);background:rgba(247,215,136,.12)}
+.list-card{padding:12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);margin-bottom:10px}
+.result-good{color:var(--ok);font-weight:800}
+.result-bad{color:#ffadad;font-weight:800}
+.note-list li{margin:8px 0;line-height:1.6}
+.console-box{background:rgba(6,18,33,.78);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px;margin:10px 0}
+.console-input{width:100%;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.14);color:var(--text);font-family:monospace;font-size:13px;margin-bottom:8px}
+.console-input::placeholder{color:rgba(255,255,255,.4)}
+.console-output{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;min-height:80px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:13px;line-height:1.5;color:#a8d8ff;margin:8px 0}
+.console-output.thinking{color:#f7d788;font-style:italic}
+.section-title{font-size:26px;font-weight:900;margin:0 0 10px}
+@media (max-width:520px){.suspect-card{grid-template-columns:84px 1fr} .suspect-card img{width:84px;height:110px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <section id="screen-start" class="hero">
+    <div class="cover"></div><div class="mask"></div>
+    <div class="hero-inner">
+      <span class="tag">赛道一｜互动空间 · DeepSeek 硬核版</span>
+      <div class="title">宿舍悬案：<br>是谁动了我的外卖？</div>
+      <div class="subtitle">A栋一层公共外卖架，21:47，一份蜂蜜芥末炸鸡神秘消失。四名来自不同楼栋与宿舍的学生，都在案发前后出现在附近。每局真凶随机，DeepSeek AI 实时博弈。</div>
+      <div class="panel">
+        <div style="font-weight:800;margin-bottom:8px">本局规则（升级版）</div>
+        <div class="smalltxt">初始固定 4 AP。<br>查看监控 / 宿舍走访 / 盘问嫌疑人 各消耗 1 AP。<br>AI 实时盘问消耗 1 AP。<br>真凶随机，每局不同。<br>只有指认真凶 + 选中该凶手的【有罪破绽】才能 S 级通关。</div>
+      </div>
+      <button class="danger" onclick="startGame()">进入案件 · 开始破案</button>
+      <button class="secondary" onclick="showHelp()">📋 玩法说明</button>
+    </div>
+  </section>
+
+  <section id="screen-main" class="hidden">
+    <div class="topbar">
+      <div class="topstat"><span class="badge">AP <b id="ap-display">4</b></span><span class="badge">剩余时间 <b id="time-display">120</b>s</span></div>
+      <div class="topstat"><button class="secondary" onclick="openNotes()">侦探笔记</button></div>
+    </div>
+    <div class="screen" style="background-image:linear-gradient(rgba(5,14,28,.65),rgba(5,14,28,.84)),url('data:image/webp;base64,UklGRiJRAABXRUJQVlA4IBZRAACQtQGdASoIApsDPp1KoE0lo62uIhFZgcATiWduUK')">
+      <div class="case-card">
+        <div class="case-banner">
+          <span class="badge">A栋宿舍楼</span>
+          <span class="badge">案件编号 #0517</span>
+        </div>
+        <h2 class="section-title">案件通报</h2>
+        <p class="smalltxt">今晚 21:47，一份"蜂蜜芥末炸鸡套餐"从 <b>A栋一层公共外卖架</b> 消失。</p>
+        <p class="smalltxt">锁定四名嫌疑人：<b>周航（A305）</b>、<b>陈默（A412）</b>、<b>许佳（B206）</b>、<b>沈越（A518）</b>。真正动了外卖的人，一定在这四人中。</p>
+        <div class="notice">你的任务：查看监控、走访宿舍、盘问嫌疑人（支持 AI 实时对话），并在必要时发起突击审讯，最终完成指认。</div>
+        <div class="line"></div>
+        <div class="grid2">
+          <button class="card-btn" onclick="openMonitor()"><div class="bg" style="background-image:url('data:image/webp;base64,UklGRmg/AABXRUJQVlA4IFw/AACwuwGdASoIApsDPp1MoE0lpCMro1I5YXATiWluUK')"></div><div class="overlay"></div><div class="txt"><div class="icon">📹</div><div class="title-main">查看监控</div><div class="small">A栋出入口录像</div><div class="ap-cost">-1 AP</div></div></button>
+          <button class="card-btn" onclick="openWalkthrough()"><div class="bg" style="background-image:url('data:image/webp;base64,UklGRoxIAABXRUJQVlA4IIBIAACQ1QGdASoIApsDPp1In00lo7Q5ojLZuzATiWdtUK')"></div><div class="overlay"></div><div class="txt"><div class="icon">🚪</div><div class="title-main">走访宿舍</div><div class="small">搜查现场物证</div><div class="ap-cost">-1 AP</div></div></button>
+          <button class="card-btn" onclick="openInterrogation()"><div class="bg" style="background-image:url('data:image/webp;base64,UklGRnI2AABXRUJQVlA4IGY2AACQvQGdASoIApsDPp1Kn02lo6MsIZBpqYATiWlu2AiJ')"></div><div class="overlay"></div><div class="txt"><div class="icon">💬</div><div class="title-main">AI 盘问</div><div class="small">深度询问嫌疑人</div><div class="ap-cost">-1 AP</div></div></button>
+          <button class="card-btn" onclick="openRaid()"><div class="bg" style="background-image:url('data:image/webp;base64,UklGRipfAABXRUJQVlA4IB5fAAAwDgKdASoIApsDPp1Kn00lpCa0IlJaEoATiWdubzoHtXq')"></div><div class="overlay"></div><div class="txt"><div class="icon">⚡</div><div class="title-main">突击审讯</div><div class="small">高强度讯问</div><div class="ap-cost">-2 AP</div></div></button>
+        </div>
+      </div>
+    </div>
+    <div class="fixed-actions"><div class="row"><button class="secondary" onclick="openEvidence()">可疑物件栏</button><button class="warn" onclick="openAccuse()">最终指认</button></div></div>
+  </section>
+
+  <div id="modal-root"></div>
+</div>
+<script>
+// ========== 🔑 核心常数：嫌疑人档案库 + 双面状态 ==========
+const DEEPSEEK_API_KEY = "sk-待填入";
+const suspects={
+  zhouhang:{
+    id:'zhouhang',name:'周航',dorm:'A305',title:'电竞狂魔',
+    portrait:'data:image/webp;base64,UklGRnorAABXRUJQVlA4IG4rAABQhAGdASrgAYACPpFGnUslo6MspbL6CZASCWluviteweM5oCqowiL/lLS4zd',
+    walkTitle:'他的宿舍 A305',
+    walkImg:'data:image/webp;base64,UklGRnorAABXRUJQVlA4IG4rAABQhAGdASrgAYACPpFGnUslo6MspbL6CZASCWluviteweM5oCqowiL/lLS4zd',
+    guiltyClue:'键盘 WASD 键上有极其违和的浅黄色油渍反光',
+    innocentClue:'键盘上只有厚厚的包浆和汗水，确实在打游戏'
+  },
+  chenmo:{
+    id:'chenmo',name:'陈默',dorm:'A412',title:'考研学霸',
+    portrait:'data:image/webp;base64,UklGRsQiAABXRUJQVlA4ILgiAABQLQGdASrgAYACPpFInkwlpC0wI5NZMgASCWlulf3kwN+4utFziRth+oODFSEkZQ',
+    walkTitle:'他的宿舍 A412',
+    walkImg:'data:image/webp;base64,UklGRsQiAABXRUJQVlA4ILgiAABQLQGdASrgAYACPpFInkwlpC0wI5NZMgASCWlulf3kwN+4utFziRth+oODFSEkZQ',
+    guiltyClue:'垃圾桶底藏着揉碎的蜂蜜芥末外卖小票',
+    innocentClue:'垃圾桶里全是废弃的微积分草稿纸'
+  },
+  xujia:{
+    id:'xujia',name:'许佳',dorm:'B206',title:'自律达人',
+    portrait:'data:image/webp;base64,UklGRqI5AABXRUJQVlA4IJY5AABQjwGdASrgAYACPpFEnUulo6YqI9Eq6UASCWluvixeqnn7pQwOwNOGXje+RWCs8EwI',
+    walkTitle:'她的宿舍 B206',
+    walkImg:'data:image/webp;base64,UklGRqI5AABXRUJQVlA4IJY5AABQjwGdASrgAYACPpFEnUulo6YqI9Eq6UASCWluvixeqnn7pQwOwNOGXje+RWCs8EwI',
+    guiltyClue:'蛋白粉罐子旁遗落着带有浅黄色酱痕的一次性塑料手套',
+    innocentClue:'桌面一尘不染，只有减脂餐的包装'
+  },
+  shenyue:{
+    id:'shenyue',name:'沈越',dorm:'A518',title:'社交海王',
+    portrait:'data:image/webp;base64,UklGRnYrAABXRUJQVlA4IGorAABwVwGdASrgAYACPpFInkwlpCmwIhL6IgASCWlu2Mb9GQiZOY9NY4Zs6zxyIymb',
+    walkTitle:'他的外套上',
+    walkImg:'data:image/webp;base64,UklGRnYrAABXRUJQVlA4IGorAABwVwGdASrgAYACPpFInkwlpCmwIhL6IgASCWlu2Mb9GQiZOY9NY4Zs6zxyIymb',
+    guiltyClue:'刚换下的外套袖口上蹭到了浅黄色的酱汁',
+    innocentClue:'外套带有淡淡的古龙水味，没有任何污渍'
+  }
+};
+
+const culpritPool=['zhouhang','chenmo','xujia','shenyue'];
+const talkMap={
+  zhouhang:{normal:'我在 A305 打排位，队友能证明我一直在线。',guilty:'我当时一直在排位，手根本没离开过键盘。'},
+  chenmo:{normal:'我在 A412 背政治，没心思管外卖。',guilty:'我一直在 A412 复习，根本没下楼。'},
+  xujia:{normal:'我从 B 栋下来只是拿东西，不会碰别人炸鸡。',guilty:'炸鸡和蜂蜜芥末热量太高了，我根本不会碰。'},
+  shenyue:{normal:'我在 A518 楼上打电话，丢外卖怎么会先想到我？',guilty:'我刚从楼上下来，不至于先怀疑我吧？'}
+};
+
+const monitorClues={
+  zhouhang:['监控显示 21:43 周航从 A 栋楼梯口快步下楼。','一段游戏战绩截图显示他在 21:44 左右有短暂挂机。'],
+  chenmo:['监控显示 21:44 陈默从自习室方向回到 A 栋。','他回楼后在一层停留了数秒，并看向外卖架。'],
+  xujia:['监控显示 21:45 许佳从 B 栋方向经过连接通道。','她在外卖架前略微停步，随后快步离开。'],
+  shenyue:['监控显示 21:46 沈越从 A 栋侧门进入。','他并不是直接回五楼，而是在一层公共区停留了一会。']
+};
+
+// ========== 🎮 全局状态管理 ==========
+let trueCulpritId = null;
+let state={
+  ap:4,
+  time:120,
+  culprit:null,
+  evidence:[],
+  notes:[],
+  selectedAccuse:null,
+  selectedEvidence:null,
+  timer:null,
+  raidUsed:false,
+  ended:false,
+  minigameCount:0,
+  lastMini:null
+};
+
+// ========== 🎬 游戏初始化 ==========
+function startGame(){
+  trueCulpritId = culpritPool[Math.floor(Math.random()*culpritPool.length)];
+  state={
+    ap:4,time:120,culprit:trueCulpritId,evidence:[],notes:[],
+    selectedAccuse:null,selectedEvidence:null,timer:null,
+    raidUsed:false,ended:false,minigameCount:0,lastMini:null
+  };
+  document.getElementById('screen-start').classList.add('hidden');
+  document.getElementById('screen-main').classList.remove('hidden');
+  updateBar();
+  clearInterval(state.timer);
+  state.timer=setInterval(()=>{
+    if(state.ended) return;
+    state.time--;
+    updateBar();
+    if(state.time<=0){
+      clearInterval(state.timer);
+      state.time=0;
+      openAccuse(true);
+    }
+  },1000);
+}
+
+function showHelp(){
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>玩法说明（硬核版）</h3><ul class="note-list"><li><b>真凶随机：</b>每局游戏的真凶在 4 人中随机生成，同时每个嫌疑人都有"有罪破绽"和"清白证明"两套说辞。</li><li><b>动态线索：</b>走访宿舍时，如果搜查的是真凶，你会得到【有罪破绽】；如果搜查无辜者，得到【清白证明】。</li><li><b>AI 盘问：</b>点击嫌疑人后会弹出"DeepSeek 审问控制台"，你可以输入问题进行实时对话。根据系统 Prompt，AI 会根据是否是真凶做出不同的反应。</li><li><b>AP 机制：</b>每个行动消耗 1 AP（突击审讯消耗 2 AP）。AP 不足时可通过小游戏补充。</li><li><b>S 级通关：</b>只有同时选中真凶 ID + 该凶手的【有罪破绽】物证，才能获得 S 级评分。</li><li><b>API Key：</b>需在代码中填入有效的 DeepSeek API Key。</li></ul></div>`);
+}
+
+function updateBar(){
+  document.getElementById('ap-display').textContent=state.ap;
+  document.getElementById('time-display').textContent=state.time;
+}
+
+function addNote(text){
+  if(!state.notes.includes(text)) state.notes.push(text);
+}
+
+function addEvidence(key){
+  if(!state.evidence.includes(key)) state.evidence.push(key);
+}
+
+function spendAP(cost, nextAction){
+  if(state.ap>=cost){
+    state.ap-=cost;
+    updateBar();
+    nextAction();
+  } else {
+    showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>⚠️ 行动力不足</h3><p>该操作需要 ${cost} AP，但你仅有 ${state.ap} AP。需要通过小游戏补充行动力吗？</p><div class="grid2"><button class="danger" onclick="launchMinigame(true, ${cost})">进入小游戏补充</button><button class="secondary" onclick="closeModal()">暂不补充</button></div></div>`);
+  }
+}
+
+// ========== 📹 监控查看 ==========
+function openMonitor(){
+  spendAP(1,()=>{
+    const clues=monitorClues[state.culprit];
+    const clue=clues[Math.floor(Math.random()*clues.length)];
+    addNote('监控：'+clue);
+    showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>监控回放</h3><div class="console-output">${clue}</div><p class="smalltxt">已记录到侦探笔记。</p></div>`);
+  });
+}
+
+// ========== 🚪 走访宿舍 & 动态线索系统 ==========
+function openWalkthrough(){
+  spendAP(1,()=>{
+    const cards=Object.values(suspects).map(s=>`<div class="suspect-card" onclick="inspectSuspect('${s.id}')"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:13px">${s.dorm}</span></h4><div class="smalltxt">${s.title}</div><div class="muted" style="font-size:12px;margin-top:6px">点击搜查</div></div></div>`).join('');
+    showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>走访宿舍</h3><div class="smalltxt">选择要搜查的宿舍</div>${cards}</div>`);
+  });
+}
+
+function inspectSuspect(id){
+  const s=suspects[id];
+  let text='';
+  let evidenceGain=false;
+  
+  if(id===state.culprit){
+    // 真凶：展示【有罪破绽】
+    text=`你在 ${s.walkTitle} 发现了真正能定案的物证：<b>${s.guiltyClue}</b>`;
+    evidenceGain=true;
+  } else {
+    // 无辜者：展示【清白证明】
+    text=`你在 ${s.walkTitle} 看到：<b>${s.innocentClue}</b>`;
+  }
+  
+  if(evidenceGain) addEvidence(id);
+  addNote(`${s.name}：${text.replace(/<[^>]+>/g,'')}`);
+  closeModal();
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>${s.name} · ${s.dorm}</h3><img src="${s.walkImg}" style="border-radius:18px;margin:10px 0;max-height:220px"><div class="smalltxt">${text}</div>${evidenceGain?'<div class="notice">✓ 关键物证已加入"可疑物件栏"</div>':''}</div>`);
+}
+
+// ========== 💬 AI 盘问系统（DeepSeek 实时博弈） ==========
+function openInterrogation(){
+  spendAP(1,()=>{
+    const cards=Object.values(suspects).map(s=>`<div class="suspect-card" onclick="startAIInterrogation('${s.id}')"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:13px">${s.dorm}</span></h4><div class="smalltxt">${s.title}</div><div class="muted" style="font-size:12px;margin-top:6px">点击进入 AI 盘问</div></div></div>`).join('');
+    showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>AI 盘问室</h3><div class="smalltxt">选择要盘问的嫌疑人</div>${cards}</div>`);
+  });
+}
+
+function startAIInterrogation(suspectId){
+  const s=suspects[suspectId];
+  const isGuilty = suspectId === state.culprit;
+  
+  closeModal();
+  showModal(`<div class="sheet">
+    <button class="close" onclick="closeModal()">关闭</button>
+    <h3>DeepSeek 审问控制台</h3>
+    <div class="smalltxt" style="margin-bottom:10px;">对话对象：<b>${s.name}</b>（${s.dorm}）${isGuilty?' 【真凶】':'【无辜者】'}</div>
+    <div class="console-box">
+      <input type="text" id="interrogation-input" class="console-input" placeholder="像侦探一样输入你想盘问的问题..." />
+      <button class="danger" style="width:100%" onclick="sendInterrogation('${suspectId}')">发送盘问</button>
+    </div>
+    <div class="console-box">
+      <div style="font-size:12px;color:#b7c3df;margin-bottom:8px;">AI 回复：</div>
+      <div id="ai-response" class="console-output">等待盘问...</div>
+    </div>
+  </div>`);
+  document.getElementById('interrogation-input').focus();
+}
+
+async function sendInterrogation(suspectId){
+  const inputEl = document.getElementById('interrogation-input');
+  const responseEl = document.getElementById('ai-response');
+  const question = inputEl.value.trim();
+  
+  if(!question){
+    alert('请输入盘问问题');
+    return;
+  }
+  
+  // ========== 校验 AP 并扣除 ==========
+  if(state.ap < 1){
+    responseEl.innerHTML='<span style="color:#ffadad">❌ 行动力耗尽，请立即指认凶手。</span>';
+    return;
+  }
+  
+  state.ap -= 1;
+  updateBar();
+  
+  responseEl.innerHTML='<span class="thinking">🤔 AI 思考中...</span>';
+  inputEl.disabled = true;
+  
+  const s = suspects[suspectId];
+  const isGuilty = suspectId === state.culprit;
+  
+  // ========== 动态组装 System Prompt（核心） ==========
+  let systemPrompt = '';
+  if(isGuilty){
+    systemPrompt = `你是一个被审讯的大学生，真实身份是盗取外卖的真凶。你必须死鸭子嘴硬，否认一切。但是，如果审问者提到了你的致命破绽："${s.guiltyClue}"，你必须表现出明显的慌乱、结巴、眼神闪躲。用【微表情】动作描述你的紧张反应。字数限制在 50 字以内。`;
+  } else {
+    systemPrompt = `你是一个被错误审讯的无辜大学生，对于玩家的盘问感到极度不耐烦、觉得离谱。你坚持自己的清白。回答要展现你的愤怒、无奈和不理解。用【微表情】动作描述你的情感。字数限制在 50 字以内。`;
+  }
+  
+  try {
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-v4-flash',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: question }
+        ],
+        temperature: 0.7,
+        max_tokens: 100,
+        stream: false
+      })
+    });
+    
+    if(!response.ok){
+      throw new Error(`API 错误: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const aiReply = data.choices[0].message.content;
+    
+    responseEl.innerHTML = `<div>${aiReply}</div>`;
+    addNote(`${s.name}(AI)：${aiReply}`);
+    
+  } catch(error){
+    // ========== 网络错误：返还 AP ==========
+    state.ap += 1;
+    updateBar();
+    responseEl.innerHTML = `<span style="color:#ffadad">❌ 网络断开或 API 错误：${error.message}<br>已返还 1 AP</span>`;
+  }
+  
+  inputEl.disabled = false;
+  inputEl.value = '';
+  inputEl.focus();
+}
+
+// ========== ⚡ 突击审讯 ==========
+function openRaid(){
+  spendAP(2,()=>{
+    const cards=Object.values(suspects).map(s=>`<div class="suspect-card" onclick="raidSuspect('${s.id}')"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:13px">${s.dorm}</span></h4><div class="smalltxt">${s.title}</div><div class="muted" style="font-size:12px;margin-top:6px">点击突击审讯</div></div></div>`).join('');
+    showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>突击审讯（-2 AP）</h3><div class="smalltxt">选择要突击审讯的嫌疑人</div>${cards}</div>`);
+  });
+}
+
+function raidSuspect(id){
+  const s=suspects[id];
+  const isGuilty = id === state.culprit;
+  const reaction = isGuilty 
+    ? `${s.name}下意识看了一眼，眼神闪躲，结巴说："我…我真的没…【扭动手指，回避眼神】"`
+    : `${s.name}皱起眉头，不耐烦地说："什么意思？我都说了几遍了，真是莫名其妙！【叉腰，愤怒的眼神】"`;
+  
+  addNote(`突击审讯 ${s.name}：${reaction}`);
+  closeModal();
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>突击审讯反应</h3><div class="console-output">${reaction}</div></div>`);
+}
+
+// ========== 📊 物证栏 ==========
+function openEvidence(){
+  const chips=state.evidence.length?state.evidence.map(id=>`<span class="evidence-chip">${suspects[id].name} · ${suspects[id].guiltyClue}</span>`).join(''):'<span class="muted">暂无物证</span>';
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>可疑物件栏</h3><p class="smalltxt">已收集的关键物证：</p><div style="padding:10px 0">${chips}</div></div>`);
+}
+
+function openNotes(){
+  const notesList=state.notes.length?'<ul class="note-list">'+state.notes.map(n=>`<li>${n}</li>`).join('')+'</ul>':'<span class="muted">暂无记录</span>';
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>侦探笔记</h3>${notesList}</div>`);
+}
+
+// ========== 🎯 最终指认系统 ==========
+function openAccuse(auto=false){
+  const suspectOptions=Object.values(suspects).map(s=>`<div class="option ${state.selectedAccuse===s.id?'sel':''}" onclick="selectAccuse('${s.id}')"><div style="font-weight:700">${s.name}</div><div class="smalltxt">${s.dorm}</div></div>`).join('');
+  const evidenceOptions=state.evidence.length?state.evidence.map(id=>`<div class="option ${state.selectedEvidence===id?'sel':''}" onclick="selectEvidence('${id}')"><div style="font-weight:700">${suspects[id].name}</div><div class="smalltxt">${suspects[id].guiltyClue}</div></div>`).join(''):'<span class="muted">暂无物证</span>';
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>🎯 最终指认</h3><div class="smalltxt">选择真凶</div><div class="row3">${suspectOptions}</div><div class="line"></div><div class="smalltxt">选择决定性物证</div><div class="row3">${evidenceOptions}</div><div class="line"></div><button class="danger" style="width:100%" onclick="submitAccuse()">提交指认</button></div>`);
+}
+
+function selectAccuse(id){
+  state.selectedAccuse=id;
+  openAccuse();
+}
+
+function selectEvidence(id){
+  state.selectedEvidence=id;
+  openAccuse();
+}
+
+function calcScore(suspectCorrect,evidenceCorrect){
+  let score = 0;
+  if(suspectCorrect) score += 55; else score += 15;
+  if(evidenceCorrect) score += 20;
+  score += Math.round(Math.max(0,state.time) / 120 * 20);
+  score -= Math.min(15, state.minigameCount * 3);
+  score = Math.max(0, Math.min(100, score));
+  let rank = score>=90?'S':score>=75?'A':score>=60?'B':score>=40?'C':'D';
+  let comment = suspectCorrect ? (evidenceCorrect ? '真凶与证据链都成立，推理很完整！' : '真凶判断正确，但证据链还不够硬。') : '指认方向错误，建议回看线索。';
+  return {score, rank, comment};
+}
+
+function submitAccuse(){
+  if(!state.selectedAccuse){ alert('先选择嫌疑人'); return; }
+  state.ended=true;
+  clearInterval(state.timer);
+  closeModal();
+  
+  const culprit=suspects[state.culprit];
+  const accused=suspects[state.selectedAccuse];
+  const evidenceCorrect=state.selectedEvidence===state.culprit;
+  const suspectCorrect=state.selectedAccuse===state.culprit;
+  const scoreInfo=calcScore(suspectCorrect,evidenceCorrect);
+  
+  let title='',summary='',klass='result-good';
+  if(suspectCorrect && evidenceCorrect){
+    title=scoreInfo.rank==='S'?'🏆 完美破案':'📍 案情成立';
+    summary=`你成功锁定真凶 <b>${culprit.name}</b>，并指出了最能解释案情的物证：<b>${culprit.guiltyClue}</b>`;
+  } else if(suspectCorrect && !evidenceCorrect){
+    title='📌 方向正确'; klass='result-bad';
+    summary=`你选对了真凶 <b>${culprit.name}</b>，但没有选出真正能串起案情的物件。真正的致命破绽是：<b>${culprit.guiltyClue}</b>`;
+  } else {
+    title='❌ 冤案'; klass='result-bad';
+    summary=`你指认了 <b>${accused.name}</b>，但真正动外卖的人是 <b>${culprit.name}</b>。暴露他/她的物证是：<b>${culprit.guiltyClue}</b>`;
+  }
+  
+  showModal(`<div class="sheet"><h3>${title}</h3><div class="score-card"><div class="smalltxt">本局评分</div><div class="score-num">${scoreInfo.score} 分｜${scoreInfo.rank} 级</div><div class="smalltxt">${scoreInfo.comment}</div></div><div class="line"></div><h4>案情复盘</h4><div class="smalltxt">${summary}</div><div class="line"></div><button class="danger" style="width:100%" onclick="location.reload()">再来一局</button></div>`);
+}
+
+// ========== 🔧 工具函数 ==========
+function closeModal(){
+  document.getElementById('modal-root').innerHTML='';
+}
+
+function showModal(html){
+  document.getElementById('modal-root').innerHTML=`<div class="modal">${html}</div>`;
+}
+
+function launchMinigame(force=false, cost=1){
+  // 简化版：直接奖励
+  state.ap += 2;
+  state.minigameCount++;
+  updateBar();
+  showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>✅ 小游戏补充</h3><p class="smalltxt">成功通过补充小游戏，获得 +2 AP。</p></div>`);
+}
+</script>
+</body>
+</html>
