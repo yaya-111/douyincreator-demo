@@ -120,6 +120,23 @@ img{max-width:100%;display:block}
 .smalltxt{font-size:13px;line-height:1.6;color:#d7e3ff}
 @media (max-width:520px){.find-wrap{grid-template-columns:1fr}.find-pane img{height:220px;max-height:220px}.word-grid{gap:5px;padding:12px}.word-cell{font-size:18px;border-radius:10px}}
 @media (max-width:420px){.title{font-size:30px} .grid2{grid-template-columns:1fr} .suspect-card{grid-template-columns:84px 1fr} .suspect-card img{width:84px;height:110px} }
+.ai-chat-box{margin-top:14px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:18px;padding:14px;max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.ai-msg{padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.6;max-width:88%;animation:fadeIn .25s ease}
+.ai-msg.user{align-self:flex-end;background:rgba(125,185,255,.18);border:1px solid rgba(125,185,255,.28);color:#d7e8ff}
+.ai-msg.bot{align-self:flex-start;background:rgba(247,215,136,.10);border:1px solid rgba(247,215,136,.22);color:#fff3d6}
+.ai-msg .micro{color:#ffcf70;font-weight:700;font-size:13px}
+.ai-thinking{align-self:flex-start;padding:10px 14px;border-radius:14px;font-size:13px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--line);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ai-input-row{display:flex;gap:8px;margin-top:10px}
+.ai-input-row input{flex:1;border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:rgba(255,255,255,.06);color:var(--text);font-size:14px;outline:none}
+.ai-input-row input:focus{border-color:var(--accent)}
+.ai-input-row button{padding:10px 16px;border-radius:14px;font-size:14px;white-space:nowrap}
+.ai-quick-row{display:flex;align-items:center;gap:8px;margin:8px 0 4px;position:relative}
+.ai-quick-toggle{cursor:pointer;font-size:20px;user-select:none}
+.ai-quick-options{display:none;flex-wrap:wrap;gap:6px}
+.ai-quick-options.show{display:flex}
+.ai-quick-btn{padding:5px 10px;border-radius:999px;background:rgba(125,185,255,.12);border:1px solid rgba(125,185,255,.3);font-size:12px;color:var(--accent);cursor:pointer}
 </style>
 </head>
 <body>
@@ -219,7 +236,54 @@ function openMonitor(){ spendAP(1,()=>{ const clues=monitorClues[state.culprit];
 function openWalkthrough(){ spendAP(1,()=>{ const cards=Object.values(suspects).map(s=>`<div class="suspect-card"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:14px">${s.dorm}</span></h4><div class="smalltxt">${s.walkTitle}</div><button style="margin-top:10px" onclick="inspectSuspect('${s.id}')">查看线索</button></div></div>`).join(''); showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>宿舍走访</h3>${cards}</div>`); }); }
 function inspectSuspect(id){ const s=suspects[id]; let text=''; let evidenceGain=false; if(id===state.culprit){ text=`你在 ${s.walkTitle} 发现了真正能定案的物证：<b>${s.evidenceName}</b>。`; addEvidence(id); addNote(`${s.name}：关键物证是 ${s.evidenceName}。`); evidenceGain=true; } else { const fake={zhouhang:'桌面上有吃过零食的痕迹，但不足以证明他动过外卖。',chenmo:'书桌很整齐，垃圾桶中只有普通纸团，看不出直接问题。',xujia:'桌上摆着运动水杯和收纳盒，只有生活气息，没有直接证据。',shenyue:'外套很整洁，只能看出他很会打理自己。'}; text=fake[id]; addNote(`${s.name}：走访后没有发现能直接定案的关键物证。`); } closeModal(); showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>${s.name} · ${s.dorm}</h3><img src="${s.walkImg}" style="border-radius:18px;margin:10px 0"><div class="list-card">${text}</div>${evidenceGain?'<div class="result-good">已收集关键物证</div>':'<div class="muted">这条线索更像干扰信息。</div>'}</div>`); }
 function openInterrogation(){ spendAP(1,()=>{ const cards=Object.values(suspects).map(s=>`<div class="suspect-card"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:14px">${s.dorm}</span></h4><div class="smalltxt">${s.title}</div><button style="margin-top:10px" onclick="questionSuspect('${s.id}')">开始盘问</button></div></div>`).join(''); showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>盘问嫌疑人</h3>${cards}</div>`); }); }
-function questionSuspect(id){ const s=suspects[id]; const text=(id===state.culprit?talkMap[id].guilty:talkMap[id].normal); addNote(`${s.name}口供：${text}`); closeModal(); showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><div class="suspect-card" style="margin-top:10px"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:14px">${s.dorm}</span></h4><div class="smalltxt">${s.title}</div></div></div><div class="list-card">${text}</div><div class="smalltxt">有些口供带有破绽，有些只是普通自证。记住细节，最后复盘会用到。</div></div>`); }
+function questionSuspect(id){ const s=suspects[id]; const text=(id===state.culprit?talkMap[id].guilty:talkMap[id].normal); addNote(`${s.name}口供：${text}`); closeModal(); window._quickQs=['你当时具体在做什么','有人能证明吗','外卖架你经过了吗','手上有没有沾到什么']; showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><div class="suspect-card" style="margin-top:10px"><img src="${s.portrait}"><div><h4>${s.name} <span class="muted" style="font-size:14px">${s.dorm}</span></h4><div class="smalltxt">${s.title}</div></div></div><div class="list-card">${text}</div><div class="smalltxt">有些口供带有破绽，有些只是普通自证。你可以在下方继续追问（每次消耗 1 AP）。</div><div class="ai-chat-box" id="ai-chat-${id}"></div><div class="ai-quick-row"><span class="ai-quick-toggle" onclick="toggleQuickQ('${id}')">💡</span><div class="ai-quick-options" id="ai-quick-${id}">${window._quickQs.map((q,i)=>`<span class="ai-quick-btn" onclick="fillQuickQ('${id}',window._quickQs[${i}])">${q}</span>`).join('')}</div></div><div class="ai-input-row"><input id="ai-input-${id}" placeholder="输入你想追问的问题…" maxlength="80" onkeydown="if(event.key==='Enter')sendAIQuestion('${id}')"/><button onclick="sendAIQuestion('${id}')">追问</button></div></div>`); }
+function toggleQuickQ(id){ const el=document.getElementById('ai-quick-'+id); if(el) el.classList.toggle('show'); }
+function fillQuickQ(id,q){ const input=document.getElementById('ai-input-'+id); if(input) input.value=q; const el=document.getElementById('ai-quick-'+id); if(el) el.classList.remove('show'); sendAIQuestion(id); }
+function buildSystemPrompt(id){
+  const s=suspects[id];
+  const isGuilty=(id===state.culprit);
+  if(isGuilty) return `你是${s.name},偷吃了外卖,用50字内回答,紧张但掩饰,加【微表情】标签`;
+  return `你是${s.name},没偷外卖,用50字内坦然回答,加【微表情】标签`;
+}
+async function callDeepSeek(systemPrompt, userMsg){
+  const res=await fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer sk-6e5b080a85654f90b11ca73952bac614'},
+    body:JSON.stringify({model:'deepseek-v4-pro',messages:[{role:'system',content:systemPrompt},{role:'user',content:userMsg}],max_tokens:300,temperature:0.85,stream:false})
+  });
+  if(!res.ok) throw new Error('API error '+res.status);
+  const data=await res.json();
+  const choice=data.choices&&data.choices[0];
+  if(!choice) throw new Error('No choices');
+  const content=choice.message.content||'';
+  if(!content) throw new Error('Empty response');
+  return content;
+}
+function sendAIQuestion(id){
+  const input=document.getElementById('ai-input-'+id);
+  const chatBox=document.getElementById('ai-chat-'+id);
+  const q=input.value.trim();
+  if(!q) return;
+  if(state.ap<1){ chatBox.innerHTML+='<div class="ai-msg bot">⚠️ AP 不足，请先通过小游戏补充行动力。</div>'; chatBox.scrollTop=chatBox.scrollHeight; return; }
+  state.ap-=1; updateBar();
+  input.value='';
+  chatBox.innerHTML+=`<div class="ai-msg user">${q}</div>`;
+  chatBox.innerHTML+='<div class="ai-thinking" id="ai-loading">思考中…</div>';
+  chatBox.scrollTop=chatBox.scrollHeight;
+  const sysPrompt=buildSystemPrompt(id);
+  callDeepSeek(sysPrompt, q).then(reply=>{
+    const el=document.getElementById('ai-loading'); if(el) el.remove();
+    const formatted=reply.replace(/【([^】]+)】/g,'<span class="micro">【$1】</span>');
+    chatBox.innerHTML+=`<div class="ai-msg bot">${formatted}</div>`;
+    chatBox.scrollTop=chatBox.scrollHeight;
+    addNote(`追问${suspects[id].name}："${q}" → ${reply}`);
+  }).catch(err=>{
+    const el=document.getElementById('ai-loading'); if(el) el.remove();
+    chatBox.innerHTML+='<div class="ai-msg bot">⚠️ 网络异常，AP 已退还。</div>';
+    state.ap+=1; updateBar();
+    chatBox.scrollTop=chatBox.scrollHeight;
+  });
+}
 function openRaid(){ spendAP(2,()=>{ if(!state.raidPair.length){ const others=culpritPool.filter(x=>x!==state.culprit); const distract=others[Math.floor(Math.random()*others.length)]; state.raidPair=[state.culprit,distract].sort(()=>Math.random()-.5); } const boxes=culpritPool.map(id=>{ const suspicious=state.raidPair.includes(id); const text=raidReactions[id][suspicious?'suspicious':'normal']; addNote(`突击审讯·${suspects[id].name}：${text}`); return `<div class="suspect-card"><img src="${suspects[id].portrait}"><div><h4>${suspects[id].name} <span class="muted" style="font-size:14px">${suspects[id].dorm}</span></h4><div class="list-card" style="margin-top:6px">${text}</div>${suspicious?'<div class="result-bad">反应明显异常</div>':'<div class="muted">反应相对自然</div>'}</div></div>`; }).join(''); showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>突击审讯</h3><div class="notice">本次突击审讯中，<b>有两个人反应异常</b>，真凶就在这两个人之中，但必须结合关键物证才能定案。</div>${boxes}</div>`); }); }
 function openEvidence(){ const chips=state.evidence.length?state.evidence.map(id=>`<span class="evidence-chip">${suspects[id].name} · ${suspects[id].evidenceName}</span>`).join(''):'<span class="muted">还没有拿到关键物证。</span>'; showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>可疑物件栏</h3><div>${chips}</div><div class="line"></div><h4>侦探笔记</h4><ul class="note-list">${state.notes.length?state.notes.map(n=>`<li>${n}</li>`).join(''):'<li class="muted">暂无记录</li>'}</ul></div>`); }
 function openNotes(){ openEvidence(); }
@@ -239,7 +303,42 @@ function calcScore(suspectCorrect,evidenceCorrect){
   return {score, rank, comment};
 }
 
-function submitAccuse(){ if(!state.selectedAccuse){ alert('先选择嫌疑人'); return; } state.ended=true; clearInterval(state.timer); closeModal(); const culprit=suspects[state.culprit]; const accused=suspects[state.selectedAccuse]; const evidenceCorrect=state.selectedEvidence===state.culprit; const suspectCorrect=state.selectedAccuse===state.culprit; let title='',summary='',klass='result-good'; if(suspectCorrect && evidenceCorrect){ title=state.minigameCount===0?'外卖福尔摩斯':'A栋包青天'; summary=`你成功锁定真凶 <b>${culprit.name}</b>，并给出了关键物证：<b>${culprit.evidenceName}</b>。`; } else if(suspectCorrect && !evidenceCorrect){ title='直觉型侦探'; klass='result-bad'; summary=`你选对了真凶 <b>${culprit.name}</b>，但没有指出真正能定案的关键物证。真正的关键证据是：<b>${culprit.evidenceName}</b>。`; } else { title='小丑侦探'; klass='result-bad'; summary=`你指认了 <b>${accused.name}</b>，但真正动外卖的人是 <b>${culprit.name}</b>。让他/她暴露的关键证据是：<b>${culprit.evidenceName}</b>。`; } const whyMap={zhouhang:'他的键盘 WASD 键上出现了极不自然的油渍反光，而且他声称手一直没离开过键盘。',chenmo:'A412 垃圾桶深处藏着写有“蜂蜜芥末”的外卖小票，这不是巧合。',xujia:'B206 桌面旁的一次性塑料手套包装上带有浅黄色酱痕，和蜂蜜芥末炸鸡的口味对应；这与她“绝不会碰炸鸡”的说法明显矛盾。',shenyue:'A518 外套袖口上的浅黄色酱汁，和失踪外卖的口味高度吻合。'}; showModal(`<div class="sheet"><h3>${title}</h3><div class="suspect-card"><img src="${culprit.portrait}"><div><h4>${culprit.name} <span class="muted" style="font-size:14px">${culprit.dorm}</span></h4><div class="${klass}">${summary}</div><div class="smalltxt" style="margin-top:8px">${whyMap[state.culprit]}</div></div></div><div class="line"></div><h4>案件复盘</h4><ul class="note-list"><li>21:40 外卖员将炸鸡放到 A 栋一层公共外卖架。</li><li>21:43~21:46 四名嫌疑人先后出现在 A/B 栋公共区域。</li><li>21:47 外卖消失，真正的线索最终指向了 <b>${culprit.name}</b>。</li></ul><button onclick="showCounselor()">查看辅导员谈话</button><button class="secondary" style="margin-top:10px" onclick="location.reload()">再来一局</button></div>`); }
+function submitAccuse(){ if(!state.selectedAccuse){ alert('先选择嫌疑人'); return; } state.ended=true; clearInterval(state.timer); closeModal(); const culprit=suspects[state.culprit]; const accused=suspects[state.selectedAccuse]; const evidenceCorrect=state.selectedEvidence===state.culprit; const suspectCorrect=state.selectedAccuse===state.culprit; const scoreInfo=calcScore(suspectCorrect,evidenceCorrect);
+  // --- 人格判定 ---
+  const dim1=(state.monitored>0?1:0)+(state.evidence.length>0?1:0)+(state.notes.length>2?1:0)>=2?'S':'I';
+  const dim2=state.time>60?'F':'W';
+  const dim3=state.minigameCount<=1?'A':'R';
+  const dim4=(suspectCorrect&&evidenceCorrect)?'T':'X';
+  const pCode=dim1+dim2+dim3+dim4;
+  const pData={
+    SFAT:{name:'全知之眼',traits:'系统型 · 闪电型 · 自律型 · 精准型',desc:'你像一台精密的破案机器——收集全面、出手果断、资源高效、结论精准。你不需要第二次机会，因为第一次就够了。',analysis:'你的调查风格极具效率，能在短时间内整合多条线索并快速锁定目标。在团队中你适合担任指挥官角色，决策果断且几乎不出错。你的弱点？可能是过于自信——当线索不足时，试着多犹豫一秒。'},
+    SFAX:{name:'急行军',traits:'系统型 · 闪电型 · 自律型 · 冒险型',desc:'你的信息收集没问题，速度也够快，但最后的判断出了岔子。就像跑完全程最后一步绊倒了。',analysis:'你具备优秀的情报收集能力和快速行动力，但在”最后一公里”的推理环节还需要更谨慎。建议：在做最终决策前，花10秒钟把所有线索在脑中过一遍。'},
+    SFRT:{name:'效率之星',traits:'系统型 · 闪电型 · 补给型 · 精准型',desc:'你善于调动一切资源为己所用——时间紧迫？那就多线并行。最终结果证明了你的策略完全正确。',analysis:'你是那种”在混乱中保持清醒”的人。即使频繁中断去补充资源，你依然能保持调查的连贯性。你的核心优势是适应力——环境越复杂，你发挥越好。'},
+    SFRX:{name:'暴力穷举',traits:'系统型 · 闪电型 · 补给型 · 冒险型',desc:'你把能用的手段都用了一遍，小游戏也打了不少，但最后答案还是错了。有时候信息太多反而是干扰。',analysis:'你的行动力满分，但推理能力需要加强。当线索堆积如山时，试着问自己”哪条线索能排除嫌疑人”而不是”哪条线索能证明嫌疑人”。逆向思维会帮助你。'},
+    SWAT:{name:'沉稳法官',traits:'系统型 · 稳健型 · 自律型 · 精准型',desc:'你不急不躁，每一步都走得稳当。你用足了时间，系统调查每个细节，最终精准定案。这就是教科书式的破案。',analysis:'你的性格适合处理复杂案件——耐心、细致、不放过任何蛛丝马迹。你可能不是最快的侦探，但你是最可靠的那个。在现实中，你适合从事需要深度分析的工作。'},
+    SWAX:{name:'走弯路的学者',traits:'系统型 · 稳健型 · 自律型 · 冒险型',desc:'你花了足够的时间收集线索，但最终判断失误。也许是信息过载让你迷失了方向。',analysis:'你的调查过程无可挑剔，问题出在最后的决策环节。你可能太执着于某条线索而忽略了整体。建议：尝试”如果我是犯人”的视角，反向推理往往能打破僵局。'},
+    SWRT:{name:'苦行僧',traits:'系统型 · 稳健型 · 补给型 · 精准型',desc:'慢工出细活是你的信条。你愿意反复补给、反复调查，只为最终那个确定的答案。结果证明你的坚持是对的。',analysis:'耐心是你最大的武器。你不会因为时间压力就草率决策，也不会因为AP不足就放弃调查。你的破案风格像磨刀——慢慢磨，一击必杀。'},
+    SWRX:{name:'迷途旅人',traits:'系统型 · 稳健型 · 补给型 · 冒险型',desc:'你花了大量时间和精力，尝试了所有方法，但最终方向还是偏了。也许下次可以试试先画一张嫌疑人关系图。',analysis:'你的问题不在于努力程度，而在于方向感。所有的调查手段你都用了，但可能缺少一个”大局观”来串联线索。建议：在行动前先建立假设，再用线索去验证。'},
+    IFAT:{name:'天才直觉',traits:'直觉型 · 闪电型 · 自律型 · 精准型',desc:'你几乎不怎么调查就锁定了真凶和证据。要么你是福尔摩斯转世，要么你的直觉已经强到可以当超能力用。',analysis:'你的推理能力远超常人——在有限信息中快速找到关键点是你的天赋。但要小心：直觉不总是可靠的，遇到更复杂的案件时，适当增加调查深度会让你如虎添翼。'},
+    IFAX:{name:'赌徒心态',traits:'直觉型 · 闪电型 · 自律型 · 冒险型',desc:'快准狠是你的风格，但这次赌输了。推理不是掷骰子，有时候多看一眼现场能救命。',analysis:'你的决策速度极快，但准确率还需要提升。你可能太相信”第一印象”了。建议：至少查看两条独立线索再做判断——这不是犹豫，是聪明。'},
+    IFRT:{name:'闪电侠探',traits:'直觉型 · 闪电型 · 补给型 · 精准型',desc:'你不走寻常路——调查手段不多但精准补给，凭直觉快速锁定目标。天赋型选手就是这么任性。',analysis:'你证明了”少即是多”。在别人还在收集第N条线索时，你已经凭少量关键信息做出了正确判断。你的决策风格适合高压环境——信息不完美也能做出好决策。'},
+    IFRX:{name:'莽撞牛仔',traits:'直觉型 · 闪电型 · 补给型 · 冒险型',desc:'不调查就冲、还冲错了方向——你的勇气值得敬佩，但侦探这行真的需要证据。',analysis:'你的行动力毋庸置疑，但缺乏策略支撑。好消息是：你的失败往往是因为”太着急”而不是”太笨”。放慢一点点节奏，你可能就是下一个IFRT。'},
+    IWAT:{name:'冷面杀手',traits:'直觉型 · 稳健型 · 自律型 · 精准型',desc:'信息不多但你用足了时间深思，最终一击必中。你是效率最高的思考者——用最少的行动获得最好的结果。',analysis:'你的决策质量极高，因为你懂得用时间换深度。不需要看所有线索，只要看对的那几条就够了。你的风格在现实中非常有优势——决策少而精，每一步都算数。'},
+    IWAX:{name:'犹豫骑士',traits:'直觉型 · 稳健型 · 自律型 · 冒险型',desc:'想了很久但判断失误——你的思考时间没有转化为正确答案。也许需要更多实际线索来支撑推理。',analysis:'你不缺思考能力，但缺少足够的信息输入。纯粹的”想”无法替代”看”。下次试着在思考之前多收集一些线索——你的分析能力配上充足的信息会很强大。'},
+    IWRT:{name:'大器晚成',traits:'直觉型 · 稳健型 · 补给型 · 精准型',desc:'手段不多、节奏慢、频繁补给，但最终结果正确。你证明了：只要方向对，速度不是问题。',analysis:'你的成功来自于坚持和正确的大方向判断。即使过程曲折，即使需要不断补给，你始终没有偏离目标。这种韧性在现实中极为珍贵。'},
+    IWRX:{name:'躺平侦探',traits:'直觉型 · 稳健型 · 补给型 · 冒险型',desc:'不太调查、也不着急、小游戏倒是打了不少……也许刑侦不太适合你？试试隔壁的料理游戏？',analysis:'你在这次案件中的表现显示你更享受”过程”而非”结果”。这不一定是坏事——也许你是那种享受探索本身而不执着于答案的人。下次试试带着目的去行动，你会发现推理的乐趣。'}
+  };
+  const p=pData[pCode]||pData['IWRX'];
+  const dimLabels={S:'系统',I:'直觉',F:'闪电',W:'稳健',A:'自律',R:'补给',T:'精准',X:'冒险'};
+  // --- 渲染全屏结算 ---
+  let resultKlass='result-good';
+  let title='',summary='';
+  if(suspectCorrect && evidenceCorrect){ title=state.minigameCount===0?'外卖福尔摩斯':'A栋包青天'; summary=`你成功锁定真凶 <b>${culprit.name}</b>，并给出了关键物证：<b>${culprit.evidenceName}</b>。`; }
+  else if(suspectCorrect && !evidenceCorrect){ title='直觉型侦探'; resultKlass='result-bad'; summary=`你选对了真凶 <b>${culprit.name}</b>，但没有指出真正能定案的关键物证。真正的关键证据是：<b>${culprit.evidenceName}</b>。`; }
+  else { title='小丑侦探'; resultKlass='result-bad'; summary=`你指认了 <b>${accused.name}</b>，但真正动外卖的人是 <b>${culprit.name}</b>。让他/她暴露的关键证据是：<b>${culprit.evidenceName}</b>。`; }
+  const whyMap={zhouhang:'他的键盘 WASD 键上出现了极不自然的油渍反光，而且他声称手一直没离开过键盘。',chenmo:'A412 垃圾桶深处藏着写有”蜂蜜芥末”的外卖小票，这不是巧合。',xujia:'B206 桌面旁的一次性塑料手套包装上带有浅黄色酱痕，和蜂蜜芥末炸鸡的口味对应；这与她”绝不会碰炸鸡”的说法明显矛盾。',shenyue:'A518 外套袖口上的浅黄色酱汁，和失踪外卖的口味高度吻合。'};
+  document.getElementById('modal-root').innerHTML=`<div style=”position:fixed;inset:0;z-index:50;background:linear-gradient(180deg,#0a1628,#060f1e);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:sheetUp .35s ease”><div style=”max-width:560px;margin:0 auto;padding:32px 18px 48px”><h3 style=”text-align:center;font-size:22px;margin:0 0 16px”>${title}</h3><div style=”text-align:center;margin-bottom:18px”><span style=”font-size:32px;font-weight:900;color:var(--gold)”>${scoreInfo.score}</span><span style=”color:var(--muted);font-size:14px”> 分 ｜ ${scoreInfo.rank} 级</span></div><div class=”suspect-card”><img src=”${culprit.portrait}”><div><h4>${culprit.name} <span class=”muted” style=”font-size:14px”>${culprit.dorm}</span></h4><div class=”${resultKlass}”>${summary}</div><div class=”smalltxt” style=”margin-top:8px”>${whyMap[state.culprit]}</div></div></div><div class=”line”></div><div style=”text-align:center;padding:24px 0 8px”><div style=”font-size:13px;color:var(--muted);letter-spacing:2px;margin-bottom:8px”>你的侦探人格</div><div style=”font-size:36px;font-weight:900;letter-spacing:4px;color:var(--gold);text-shadow:0 0 20px rgba(247,215,136,.3)”>${pCode}</div><div style=”font-size:24px;font-weight:900;margin:8px 0;color:var(--text)”>${p.name}</div><div style=”display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0”><span style=”padding:4px 10px;border-radius:999px;background:rgba(125,185,255,.1);border:1px solid rgba(125,185,255,.25);font-size:12px;color:var(--accent)”>${dimLabels[dim1]}型</span><span style=”padding:4px 10px;border-radius:999px;background:rgba(125,185,255,.1);border:1px solid rgba(125,185,255,.25);font-size:12px;color:var(--accent)”>${dimLabels[dim2]}型</span><span style=”padding:4px 10px;border-radius:999px;background:rgba(125,185,255,.1);border:1px solid rgba(125,185,255,.25);font-size:12px;color:var(--accent)”>${dimLabels[dim3]}型</span><span style=”padding:4px 10px;border-radius:999px;background:rgba(125,185,255,.1);border:1px solid rgba(125,185,255,.25);font-size:12px;color:var(--accent)”>${dimLabels[dim4]}型</span></div></div><div style=”background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0”><div style=”font-size:15px;line-height:1.8;color:var(--text)”>${p.desc}</div><div class=”line”></div><div style=”font-size:13px;line-height:1.8;color:var(--muted)”>${p.analysis}</div></div><div style=”background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0”><h4 style=”margin:0 0 10px;font-size:16px;color:var(--accent)”>案件复盘</h4><ul style=”padding-left:18px;margin:0” class=”note-list”><li>21:40 外卖员将炸鸡放到 A 栋一层公共外卖架</li><li>21:43~21:46 四名嫌疑人先后出现在公共区域</li><li>21:47 外卖消失，真正的线索最终指向了 <b>${culprit.name}</b></li></ul></div><div style=”display:flex;flex-direction:column;gap:10px;margin-top:16px”><button onclick=”showCounselor()”>查看辅导员谈话</button><button class=”secondary” onclick=”location.reload()”>再来一局</button></div></div></div>`;
+}
 function showCounselor(){ const culprit=suspects[state.culprit]; showModal(`<div class="sheet"><button class="close" onclick="closeModal()">关闭</button><h3>辅导员谈话室</h3><div class="smalltxt">地点：学生事务办公室</div><div class="suspect-card" style="margin-top:10px"><img src="${culprit.portrait}"><div><h4>${culprit.name} <span class="muted" style="font-size:14px">${culprit.dorm}</span></h4><div class="list-card">辅导员：说吧，为什么动同学的外卖？<br><br>${culprit.name}：我……当时只是想确认一下是不是我的。<br><br>辅导员：确认到蜂蜜芥末味了？下周外卖架值班，记得准时到。</div></div></div></div>`); }
 function closeModal(){ if(window.currentGameTimer){ clearInterval(window.currentGameTimer); window.currentGameTimer=null; } document.getElementById('modal-root').innerHTML=''; }
 function showModal(html){ document.getElementById('modal-root').innerHTML=`<div class="modal">${html}</div>`; }
@@ -528,13 +627,17 @@ function submitAccuse(){
   const scoreInfo=calcScore(suspectCorrect,evidenceCorrect);
   let title='',summary='',klass='result-good';
   if(suspectCorrect && evidenceCorrect){
-    title=scoreInfo.rank==='S'?'外卖福尔摩斯':'A栋包青天';
+    const sTitles={S:'外卖福尔摩斯',A:'A栋包青天',B:'宿舍夏洛克'};
+    if(state.minigameCount===0 && state.time>60) title='速通侦探';
+    else if(state.time>90) title='闪电破案王';
+    else title=sTitles[scoreInfo.rank]||'推理达人';
     summary=`你成功锁定真凶 <b>${culprit.name}</b>，并指出了最能解释案情的可疑物件：<b>${culprit.evidenceName}</b>。`;
   } else if(suspectCorrect && !evidenceCorrect){
-    title='直觉型侦探'; klass='result-bad';
+    title=state.time>60?'直觉型侦探':'半步之遥'; klass='result-bad';
     summary=`你选对了真凶 <b>${culprit.name}</b>，但没有选出真正能串起案情的物件。真正关键的是：<b>${culprit.evidenceName}</b>。`;
   } else {
-    title='小丑侦探'; klass='result-bad';
+    const failTitles=['小丑侦探','冤案制造者','外卖迷路人','反向福尔摩斯'];
+    title=failTitles[Math.floor(Math.random()*failTitles.length)]; klass='result-bad';
     summary=`你指认了 <b>${accused.name}</b>，但真正动外卖的人是 <b>${culprit.name}</b>。让他/她暴露的物件是：<b>${culprit.evidenceName}</b>。`;
   }
   const whyMap={zhouhang:'他的键盘 WASD 键上出现了极不自然的油渍反光，而且他声称手一直没离开过键盘。',chenmo:'A412 垃圾桶深处藏着写有“蜂蜜芥末”的外卖小票，这不是巧合。',xujia:'B206 桌面旁的一次性塑料手套包装上带有浅黄色酱痕，和蜂蜜芥末炸鸡的口味对应；这与她“绝不会碰炸鸡”的说法明显矛盾。',shenyue:'A518 外套袖口上的浅黄色酱汁，和失踪外卖的口味高度吻合。'};
